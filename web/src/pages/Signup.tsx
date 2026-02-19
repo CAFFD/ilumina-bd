@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
+import { api } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -23,22 +23,21 @@ const Signup = () => {
     }
     setLoading(true);
 
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: { full_name: fullName },
-        emailRedirectTo: window.location.origin,
-      },
-    });
-
-    if (error) {
-      toast.error(error.message);
-    } else {
-      toast.success("Conta criada! Verifique seu email para confirmar o cadastro.");
+    try {
+      await api.post('/auth/register', {
+        email,
+        password,
+        name: fullName,
+      });
+      toast.success("Conta criada! Redirecionando para login...");
       navigate("/login");
+    } catch (error: any) {
+      console.error(error);
+      const msg = error.response?.data?.message || "Erro ao criar conta. Tente novamente.";
+      toast.error(msg);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (

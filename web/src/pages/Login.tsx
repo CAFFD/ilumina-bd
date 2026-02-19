@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,6 +10,7 @@ import { Loader2, Mail, Lock, Lamp } from "lucide-react";
 
 const Login = () => {
   const navigate = useNavigate();
+  const { signIn } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -18,17 +19,16 @@ const Login = () => {
     e.preventDefault();
     setLoading(true);
 
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-
-    if (error) {
-      toast.error(error.message === "Invalid login credentials"
-        ? "Email ou senha incorretos"
-        : error.message);
-    } else {
+    try {
+      await signIn(email, password);
       toast.success("Login realizado com sucesso!");
       navigate("/dashboard");
+    } catch (error: any) {
+      console.error(error);
+      toast.error(error.response?.data?.message || "Email ou senha incorretos");
+    } finally {
+        setLoading(false);
     }
-    setLoading(false);
   };
 
   return (

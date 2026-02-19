@@ -62,6 +62,16 @@ export const occurrenceCategoryEnum = pgEnum("occurrence_category", [
 // TABELAS
 // ============================================================
 
+// --- Users (Auth Local) ---
+export const users = pgTable("users", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  email: text("email").notNull().unique(),
+  password: text("password").notNull(), // Hash
+  name: text("name").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
 // --- Bairros ---
 export const neighborhoods = pgTable("neighborhoods", {
   id: uuid("id").primaryKey().defaultRandom(),
@@ -118,10 +128,10 @@ export const categories = pgTable("categories", {
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
-// --- Perfis (vinculados ao auth) ---
+// --- Perfis (vinculados ao auth antigo, agora linkado a users) ---
 export const profiles = pgTable("profiles", {
   id: uuid("id").primaryKey().defaultRandom(),
-  userId: uuid("user_id").notNull().unique(),
+  userId: uuid("user_id").notNull().references(() => users.id).unique(),
   fullName: text("full_name"),
   phone: text("phone"),
   avatarUrl: text("avatar_url"),
@@ -132,7 +142,7 @@ export const profiles = pgTable("profiles", {
 // --- Roles de Usuário ---
 export const userRoles = pgTable("user_roles", {
   id: uuid("id").primaryKey().defaultRandom(),
-  userId: uuid("user_id").notNull(),
+  userId: uuid("user_id").notNull().references(() => users.id),
   role: appRoleEnum("role").notNull().default("citizen"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
@@ -147,7 +157,7 @@ export const occurrences = pgTable("occurrences", {
   priority: priorityLevelEnum("priority").notNull().default("medium"),
   categoryId: uuid("category_id").references(() => categories.id),
   poleId: uuid("pole_id").references(() => poles.id),
-  userId: uuid("user_id").notNull(),
+  userId: uuid("user_id").notNull().references(() => users.id),
   reporterName: text("reporter_name"),
   reporterEmail: text("reporter_email"),
   reporterPhone: text("reporter_phone"),
@@ -175,8 +185,8 @@ export const workOrders = pgTable("work_orders", {
   priority: priorityLevelEnum("priority").notNull().default("medium"),
   notes: text("notes"),
   scheduledDate: timestamp("scheduled_date", { withTimezone: true }),
-  assignedTo: uuid("assigned_to"),
-  createdBy: uuid("created_by").notNull(),
+  assignedTo: uuid("assigned_to"), // Referência opcional a user/operator
+  createdBy: uuid("created_by").notNull().references(() => users.id),
   startedAt: timestamp("started_at", { withTimezone: true }),
   completedAt: timestamp("completed_at", { withTimezone: true }),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
@@ -195,7 +205,7 @@ export const workOrderItems = pgTable("work_order_items", {
 export const workOrderOperators = pgTable("work_order_operators", {
   id: uuid("id").primaryKey().defaultRandom(),
   workOrderId: uuid("work_order_id").notNull().references(() => workOrders.id, { onDelete: "cascade" }),
-  userId: uuid("user_id").notNull(),
+  userId: uuid("user_id").notNull().references(() => users.id),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
@@ -205,7 +215,7 @@ export const activityLogs = pgTable("activity_logs", {
   action: text("action").notNull(),
   targetTable: text("target_table"),
   targetId: uuid("target_id"),
-  userId: uuid("user_id"),
+  userId: uuid("user_id").references(() => users.id),
   details: jsonb("details"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
@@ -213,6 +223,15 @@ export const activityLogs = pgTable("activity_logs", {
 // ============================================================
 // RELAÇÕES (Drizzle ORM)
 // ============================================================
+
+export const usersRelations = relations(users, ({ one, many }) => ({
+  profile: one(profiles, {
+    fields: [users.id],
+    references: [profiles.userId],
+  }),
+  roles: many(userRoles),
+  occurrences: many(occurrences),
+}));
 
 export const addressesRelations = relations(addresses, ({ one }) => ({
   neighborhood: one(neighborhoods, {
@@ -246,6 +265,10 @@ export const occurrencesRelations = relations(occurrences, ({ one, many }) => ({
     fields: [occurrences.poleId],
     references: [poles.id],
   }),
+  reporter: one(users, {
+    fields: [occurrences.userId],
+    references: [users.id],
+  }),
   images: many(occurrenceImages),
   workOrderItems: many(workOrderItems),
 }));
@@ -257,9 +280,13 @@ export const occurrenceImagesRelations = relations(occurrenceImages, ({ one }) =
   }),
 }));
 
-export const workOrdersRelations = relations(workOrders, ({ many }) => ({
+export const workOrdersRelations = relations(workOrders, ({ one, many }) => ({
   items: many(workOrderItems),
   operators: many(workOrderOperators),
+  creator: one(users, {
+      fields: [workOrders.createdBy],
+      references: [users.id]
+  })
 }));
 
 export const workOrderItemsRelations = relations(workOrderItems, ({ one }) => ({
@@ -278,4 +305,8 @@ export const workOrderOperatorsRelations = relations(workOrderOperators, ({ one 
     fields: [workOrderOperators.workOrderId],
     references: [workOrders.id],
   }),
+  user: one(users, {
+      fields: [workOrderOperators.userId],
+      references: [users.id]
+  })
 }));

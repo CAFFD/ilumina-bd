@@ -4,7 +4,7 @@ import * as XLSX from "xlsx";
 import pg from "pg";
 const { Pool } = pg;
 import { drizzle } from "drizzle-orm/node-postgres";
-import { poles } from "./schema";
+import { poles } from "./schema.js";
 
 import * as dotenv from "dotenv";
 dotenv.config();
