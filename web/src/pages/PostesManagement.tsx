@@ -4,7 +4,7 @@ import { MapView } from "@/components/MapView";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { loadPostsFromXLSX, type RealPost } from "@/lib/posts-data";
+import { loadPostsFromAPI, type RealPost } from "@/lib/posts-data";
 import { QRCodeSVG } from "qrcode.react";
 import { MapPin, Search, Download, FileDown, Loader2, QrCode, X } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -21,7 +21,7 @@ export default function PostesManagement() {
   const [exporting, setExporting] = useState(false);
 
   useEffect(() => {
-    loadPostsFromXLSX().then(setPosts);
+    loadPostsFromAPI().then(setPosts);
   }, []);
 
   const filtered = posts.filter((p) =>

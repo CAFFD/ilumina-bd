@@ -17,7 +17,7 @@ import {
   MOCK_OCCURRENCES, STATUS_LABELS, STATUS_MAP_COLORS,
   type Occurrence,
 } from "@/lib/mock-data";
-import { loadPostsFromXLSX, type RealPost } from "@/lib/posts-data";
+import { loadPostsFromAPI, type RealPost } from "@/lib/posts-data";
 import { getBairroByCep } from "@/lib/cep-bairro";
 import { AlertTriangle, CheckCircle, Clock, MapPin, ClipboardList, TrendingUp, Search, QrCode, Download, ExternalLink, FileDown, Loader2, MousePointer, X, Eye } from "lucide-react";
 import { QRCodeCanvas, QRCodeSVG } from "qrcode.react";
@@ -43,7 +43,7 @@ export default function Dashboard() {
   const mapInstanceRef = useRef<L.Map | null>(null);
 
   useEffect(() => {
-    loadPostsFromXLSX().then(setPosts);
+    loadPostsFromAPI().then(setPosts);
   }, []);
 
   const postsWithBairro = useMemo(() =>

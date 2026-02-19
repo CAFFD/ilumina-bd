@@ -4,7 +4,7 @@ import { PublicHeader } from "@/components/PublicHeader";
 import { MapView } from "@/components/MapView";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { loadPostsFromXLSX, type RealPost } from "@/lib/posts-data";
+import { loadPostsFromAPI, type RealPost } from "@/lib/posts-data";
 import { MOCK_OCCURRENCES, STATUS_LABELS } from "@/lib/mock-data";
 import { StatusBadge } from "@/components/StatusBadge";
 import { QRCodeSVG } from "qrcode.react";
@@ -18,7 +18,7 @@ export default function PostDetail() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    loadPostsFromXLSX().then((posts) => {
+    loadPostsFromAPI().then((posts) => {
       const found = posts.find((p) => p.idPoste === codigoPublico);
       setPost(found || null);
       setLoading(false);

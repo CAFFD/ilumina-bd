@@ -5,6 +5,8 @@ import jwt from '@fastify/jwt'
 import 'dotenv/config'
 
 import { authRoutes } from './routes/auth.js'
+import { polesRoutes } from './routes/poles.js'
+import { occurrencesRoutes } from './routes/occurrences.js'
 
 const app = fastify()
 
@@ -30,6 +32,8 @@ app.register(cookie)
 
 // --- Routes ---
 app.register(authRoutes, { prefix: '/api/auth' })
+app.register(polesRoutes, { prefix: '/api/poles' })
+app.register(occurrencesRoutes, { prefix: '/api/occurrences' })
 
 // --- Server Start ---
 app.listen({ port: 3333, host: '0.0.0.0' }).then(() => {

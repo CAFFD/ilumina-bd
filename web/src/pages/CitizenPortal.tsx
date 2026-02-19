@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
-import { loadPostsFromXLSX, type RealPost } from "@/lib/posts-data";
+import { loadPostsFromAPI, type RealPost } from "@/lib/posts-data";
 import { haversineDistance } from "@/lib/mock-data";
 import { MapPin, Loader2, CheckCircle, Navigation, LocateFixed, Phone, AlertTriangle, Wrench } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -32,7 +32,7 @@ export default function CitizenPortal() {
   const [activeRadius, setActiveRadius] = useState(NEARBY_RADIUS_M);
 
   useEffect(() => {
-    loadPostsFromXLSX().then(setPosts);
+    loadPostsFromAPI().then(setPosts);
   }, []);
 
   const findNearest = useCallback((lat: number, lng: number, postList: RealPost[]): RealPost | null => {
@@ -127,7 +127,7 @@ export default function CitizenPortal() {
     return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`;
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!selectedPost) {
       toast.error("Selecione um poste");
       return;
@@ -138,12 +138,36 @@ export default function CitizenPortal() {
       return;
     }
     setSubmitting(true);
-    setTimeout(() => {
-      const proto = `ZU-2026-${String(Math.floor(Math.random() * 9999)).padStart(4, "0")}`;
-      setProtocol(proto);
+
+    try {
+      const response = await fetch('/api/occurrences', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          poleId: selectedPost.id, // Internal UUID
+          category: 'LAMPADA_QUEIMADA',
+          description: 'Relato rápido via QR Code',
+          phone: digits,
+          location: userLocation ? [userLocation[0], userLocation[1]] : undefined,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Erro ao registrar chamado');
+      }
+
+      const data = await response.json();
+      setProtocol(data.protocol);
       setStep("success");
+      toast.success("Chamado registrado com sucesso!");
+    } catch (error) {
+      console.error(error);
+      toast.error("Erro ao registrar chamado. Tente novamente.");
+    } finally {
       setSubmitting(false);
-    }, 1500);
+    }
   };
 
   const nearbyWithDist = userLocation ? getNearbyPosts(userLocation[0], userLocation[1], posts, activeRadius) : [];

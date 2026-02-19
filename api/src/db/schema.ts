@@ -157,7 +157,7 @@ export const occurrences = pgTable("occurrences", {
   priority: priorityLevelEnum("priority").notNull().default("medium"),
   categoryId: uuid("category_id").references(() => categories.id),
   poleId: uuid("pole_id").references(() => poles.id),
-  userId: uuid("user_id").notNull().references(() => users.id),
+  userId: uuid("user_id").references(() => users.id),
   reporterName: text("reporter_name"),
   reporterEmail: text("reporter_email"),
   reporterPhone: text("reporter_phone"),
