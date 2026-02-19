@@ -1,0 +1,159 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap');
+
+@layer base {
+  :root {
+    --background: 210 20% 98%;
+    --foreground: 215 35% 15%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 215 35% 15%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 215 35% 15%;
+
+    --primary: 216 85% 30%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 210 30% 94%;
+    --secondary-foreground: 216 85% 30%;
+
+    --muted: 210 20% 96%;
+    --muted-foreground: 215 15% 50%;
+
+    --accent: 210 60% 95%;
+    --accent-foreground: 216 85% 30%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 142 72% 29%;
+    --success-foreground: 0 0% 100%;
+
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+
+    --info: 199 89% 48%;
+    --info-foreground: 0 0% 100%;
+
+    --border: 214 20% 90%;
+    --input: 214 20% 90%;
+    --ring: 216 85% 30%;
+
+    --radius: 0.625rem;
+
+    --sidebar-background: 216 85% 30%;
+    --sidebar-foreground: 210 40% 96%;
+    --sidebar-primary: 0 0% 100%;
+    --sidebar-primary-foreground: 216 85% 30%;
+    --sidebar-accent: 216 80% 25%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 216 70% 35%;
+    --sidebar-ring: 0 0% 100%;
+
+    --gradient-primary: linear-gradient(135deg, hsl(216, 85%, 30%), hsl(216, 75%, 45%));
+    --gradient-hero: linear-gradient(160deg, hsl(216, 85%, 25%), hsl(216, 75%, 40%), hsl(199, 89%, 48%));
+    --shadow-card: 0 1px 3px 0 hsl(216 85% 30% / 0.06), 0 1px 2px -1px hsl(216 85% 30% / 0.06);
+    --shadow-elevated: 0 10px 25px -5px hsl(216 85% 30% / 0.1), 0 8px 10px -6px hsl(216 85% 30% / 0.08);
+  }
+
+  .dark {
+    --background: 216 30% 8%;
+    --foreground: 210 40% 96%;
+
+    --card: 216 30% 12%;
+    --card-foreground: 210 40% 96%;
+
+    --popover: 216 30% 12%;
+    --popover-foreground: 210 40% 96%;
+
+    --primary: 210 80% 55%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 216 25% 18%;
+    --secondary-foreground: 210 40% 96%;
+
+    --muted: 216 25% 18%;
+    --muted-foreground: 215 20% 60%;
+
+    --accent: 216 30% 20%;
+    --accent-foreground: 210 40% 96%;
+
+    --destructive: 0 62% 30%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 216 25% 20%;
+    --input: 216 25% 20%;
+    --ring: 210 80% 55%;
+
+    --sidebar-background: 216 30% 10%;
+    --sidebar-foreground: 210 40% 96%;
+    --sidebar-primary: 210 80% 55%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 216 30% 15%;
+    --sidebar-accent-foreground: 210 40% 96%;
+    --sidebar-border: 216 25% 18%;
+    --sidebar-ring: 210 80% 55%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
+  }
+}
+
+@layer components {
+  .status-badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+  .status-pending {
+    @apply bg-warning/15 text-warning;
+  }
+  .status-approved {
+    @apply bg-success/15 text-success;
+  }
+  .status-rejected {
+    @apply bg-destructive/15 text-destructive;
+  }
+  .status-assigned {
+    @apply bg-info/15 text-info;
+  }
+  .status-in-progress {
+    @apply bg-primary/15 text-primary;
+  }
+  .status-completed {
+    @apply bg-success/15 text-success;
+  }
+}
+
+/* Leaflet overrides — keep map below modals/dialogs */
+.leaflet-container {
+  font-family: 'Inter', system-ui, sans-serif !important;
+  border-radius: var(--radius);
+  z-index: 0 !important;
+}
+
+.leaflet-pane,
+.leaflet-top,
+.leaflet-bottom,
+.leaflet-control {
+  z-index: 0 !important;
+}
+
+.leaflet-popup-content-wrapper {
+  border-radius: var(--radius) !important;
+  box-shadow: var(--shadow-elevated) !important;
+}

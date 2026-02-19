@@ -1,0 +1,62 @@
+# ============================================================
+# 🏙️ IluminaCity - Docker Compose (Produção / Proxmox)
+# ============================================================
+version: "3.8"
+
+services:
+  # --- Banco de Dados ---
+  db:
+    image: postgres:16-alpine
+    container_name: iluminacity-db
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    ports:
+      - "5435:5432"
+    networks:
+      - iluminacity_internal
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # --- Admin do Banco ---
+  adminer:
+    image: adminer
+    container_name: iluminacity-adminer
+    restart: always
+    ports:
+      - "8081:8080"
+    networks:
+      - iluminacity_internal
+    depends_on:
+      db:
+        condition: service_healthy
+
+  # --- Aplicação Frontend ---
+  zeladoria:
+    build: .
+    container_name: iluminacity-app
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    networks:
+      - iluminacity_internal
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - NODE_ENV=production
+
+volumes:
+  pg_data:
+    driver: local
+
+networks:
+  iluminacity_internal:
+    driver: bridge
