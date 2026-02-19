@@ -14,15 +14,15 @@ services:
     environment:
       POSTGRES_USER: ${DB_USER:-admin}
       POSTGRES_PASSWORD: ${DB_PASSWORD:-admin}
-      POSTGRES_DB: ${DB_NAME:-iluminacity}
+      POSTGRES_DB: ${DB_NAME:-iluminacity_db}
     volumes:
       - pg_data:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - "${DB_PORT:-5435}:5432"
     networks:
       - iluminacity_internal
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-admin} -d ${DB_NAME:-iluminacity}"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-admin} -d ${DB_NAME:-iluminacity_db}"]
       interval: 10s
       timeout: 5s
       retries: 5
