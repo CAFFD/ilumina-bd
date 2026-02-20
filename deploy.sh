@@ -41,6 +41,9 @@ sleep 10
 echo "🗄️  Rodando migrações do banco..."
 docker compose exec api npm run db:migrate
 
+echo "🌱  Rodando Seeds do banco de dados..."
+docker compose exec api npm run db:seed
+
 # 8. Criar Admin Padrão (Idempotente - só cria se não existir)
 echo "👤 Verificando usuário admin..."
 docker compose exec api npx tsx src/db/create-admin.ts
