@@ -1,10 +1,10 @@
 {
-  "id": "87e1f586-d8bd-4753-ac16-8dd22f317537",
+  "id": "a574802f-5e91-4d02-9f0f-e02b9d16951a",
   "prevId": "00000000-0000-0000-0000-000000000000",
-  "version": "7",
-  "dialect": "postgresql",
+  "version": "5",
+  "dialect": "pg",
   "tables": {
-    "public.activity_logs": {
+    "activity_logs": {
       "name": "activity_logs",
       "schema": "",
       "columns": {
@@ -54,14 +54,25 @@
         }
       },
       "indexes": {},
-      "foreignKeys": {},
+      "foreignKeys": {
+        "activity_logs_user_id_users_id_fk": {
+          "name": "activity_logs_user_id_users_id_fk",
+          "tableFrom": "activity_logs",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
+      "uniqueConstraints": {}
     },
-    "public.addresses": {
+    "addresses": {
       "name": "addresses",
       "schema": "",
       "columns": {
@@ -128,12 +139,9 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
+      "uniqueConstraints": {}
     },
-    "public.categories": {
+    "categories": {
       "name": "categories",
       "schema": "",
       "columns": {
@@ -187,12 +195,9 @@
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
+      "uniqueConstraints": {}
     },
-    "public.neighborhoods": {
+    "neighborhoods": {
       "name": "neighborhoods",
       "schema": "",
       "columns": {
@@ -241,12 +246,9 @@
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
+      "uniqueConstraints": {}
     },
-    "public.occurrence_images": {
+    "occurrence_images": {
       "name": "occurrence_images",
       "schema": "",
       "columns": {
@@ -300,12 +302,9 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
+      "uniqueConstraints": {}
     },
-    "public.occurrences": {
+    "occurrences": {
       "name": "occurrences",
       "schema": "",
       "columns": {
@@ -337,7 +336,6 @@
         "status": {
           "name": "status",
           "type": "occurrence_status",
-          "typeSchema": "public",
           "primaryKey": false,
           "notNull": true,
           "default": "'open'"
@@ -345,7 +343,6 @@
         "priority": {
           "name": "priority",
           "type": "priority_level",
-          "typeSchema": "public",
           "primaryKey": false,
           "notNull": true,
           "default": "'medium'"
@@ -366,7 +363,7 @@
           "name": "user_id",
           "type": "uuid",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "reporter_name": {
           "name": "reporter_name",
@@ -446,15 +443,25 @@
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
+        },
+        "occurrences_user_id_users_id_fk": {
+          "name": "occurrences_user_id_users_id_fk",
+          "tableFrom": "occurrences",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
+      "uniqueConstraints": {}
     },
-    "public.pole_id_history": {
+    "pole_id_history": {
       "name": "pole_id_history",
       "schema": "",
       "columns": {
@@ -514,12 +521,9 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
+      "uniqueConstraints": {}
     },
-    "public.poles": {
+    "poles": {
       "name": "poles",
       "schema": "",
       "columns": {
@@ -566,7 +570,7 @@
           "type": "text[]",
           "primaryKey": false,
           "notNull": false,
-          "default": "'{}'"
+          "default": []
         },
         "address_id": {
           "name": "address_id",
@@ -614,12 +618,9 @@
             "external_id"
           ]
         }
-      },
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
+      }
     },
-    "public.profiles": {
+    "profiles": {
       "name": "profiles",
       "schema": "",
       "columns": {
@@ -670,7 +671,21 @@
         }
       },
       "indexes": {},
-      "foreignKeys": {},
+      "foreignKeys": {
+        "profiles_user_id_users_id_fk": {
+          "name": "profiles_user_id_users_id_fk",
+          "tableFrom": "profiles",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "profiles_user_id_unique": {
@@ -680,12 +695,9 @@
             "user_id"
           ]
         }
-      },
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
+      }
     },
-    "public.user_roles": {
+    "user_roles": {
       "name": "user_roles",
       "schema": "",
       "columns": {
@@ -705,7 +717,6 @@
         "role": {
           "name": "role",
           "type": "app_role",
-          "typeSchema": "public",
           "primaryKey": false,
           "notNull": true,
           "default": "'citizen'"
@@ -719,14 +730,82 @@
         }
       },
       "indexes": {},
+      "foreignKeys": {
+        "user_roles_user_id_users_id_fk": {
+          "name": "user_roles_user_id_users_id_fk",
+          "tableFrom": "user_roles",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "users": {
+      "name": "users",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "email": {
+          "name": "email",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "password": {
+          "name": "password",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
+      "uniqueConstraints": {
+        "users_email_unique": {
+          "name": "users_email_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "email"
+          ]
+        }
+      }
     },
-    "public.work_order_items": {
+    "work_order_items": {
       "name": "work_order_items",
       "schema": "",
       "columns": {
@@ -787,12 +866,9 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
+      "uniqueConstraints": {}
     },
-    "public.work_order_operators": {
+    "work_order_operators": {
       "name": "work_order_operators",
       "schema": "",
       "columns": {
@@ -837,15 +913,25 @@
           ],
           "onDelete": "cascade",
           "onUpdate": "no action"
+        },
+        "work_order_operators_user_id_users_id_fk": {
+          "name": "work_order_operators_user_id_users_id_fk",
+          "tableFrom": "work_order_operators",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
+      "uniqueConstraints": {}
     },
-    "public.work_orders": {
+    "work_orders": {
       "name": "work_orders",
       "schema": "",
       "columns": {
@@ -865,7 +951,6 @@
         "status": {
           "name": "status",
           "type": "work_order_status",
-          "typeSchema": "public",
           "primaryKey": false,
           "notNull": true,
           "default": "'pending'"
@@ -873,7 +958,6 @@
         "priority": {
           "name": "priority",
           "type": "priority_level",
-          "typeSchema": "public",
           "primaryKey": false,
           "notNull": true,
           "default": "'medium'"
@@ -943,73 +1027,74 @@
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
+        },
+        "work_orders_created_by_users_id_fk": {
+          "name": "work_orders_created_by_users_id_fk",
+          "tableFrom": "work_orders",
+          "tableTo": "users",
+          "columnsFrom": [
+            "created_by"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
+      "uniqueConstraints": {}
     }
   },
   "enums": {
-    "public.app_role": {
+    "app_role": {
       "name": "app_role",
-      "schema": "public",
-      "values": [
-        "admin",
-        "operator",
-        "citizen"
-      ]
+      "values": {
+        "admin": "admin",
+        "operator": "operator",
+        "citizen": "citizen"
+      }
     },
-    "public.occurrence_category": {
+    "occurrence_category": {
       "name": "occurrence_category",
-      "schema": "public",
-      "values": [
-        "lampada_queimada",
-        "lampada_piscando",
-        "vandalismo",
-        "outros"
-      ]
+      "values": {
+        "lampada_queimada": "lampada_queimada",
+        "lampada_piscando": "lampada_piscando",
+        "vandalismo": "vandalismo",
+        "outros": "outros"
+      }
     },
-    "public.occurrence_status": {
+    "occurrence_status": {
       "name": "occurrence_status",
-      "schema": "public",
-      "values": [
-        "open",
-        "in_progress",
-        "resolved",
-        "closed",
-        "cancelled"
-      ]
+      "values": {
+        "open": "open",
+        "in_progress": "in_progress",
+        "resolved": "resolved",
+        "closed": "closed",
+        "cancelled": "cancelled"
+      }
     },
-    "public.priority_level": {
+    "priority_level": {
       "name": "priority_level",
-      "schema": "public",
-      "values": [
-        "low",
-        "medium",
-        "high",
-        "critical"
-      ]
+      "values": {
+        "low": "low",
+        "medium": "medium",
+        "high": "high",
+        "critical": "critical"
+      }
     },
-    "public.work_order_status": {
+    "work_order_status": {
       "name": "work_order_status",
-      "schema": "public",
-      "values": [
-        "pending",
-        "assigned",
-        "in_progress",
-        "completed",
-        "cancelled"
-      ]
+      "values": {
+        "pending": "pending",
+        "assigned": "assigned",
+        "in_progress": "in_progress",
+        "completed": "completed",
+        "cancelled": "cancelled"
+      }
     }
   },
   "schemas": {},
-  "sequences": {},
-  "roles": {},
-  "policies": {},
-  "views": {},
   "_meta": {
     "columns": {},
     "schemas": {},
