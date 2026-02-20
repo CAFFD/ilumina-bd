@@ -24,7 +24,7 @@ import { QRCodeCanvas, QRCodeSVG } from "qrcode.react";
 import { toast } from "sonner";
 import jsPDF from "jspdf";
 
-const BASE_URL = "https://palmital.sp.gov.br/postes";
+const BASE_URL = "https://ilumina.palmital.sp.gov.br/poste";
 
 const STAT_CARDS = [
   { label: "Pendentes", value: MOCK_OCCURRENCES.filter((o) => o.status === "PENDENTE_APROVACAO").length, icon: Clock, color: "text-warning" },
@@ -155,7 +155,7 @@ export default function Dashboard() {
 
           pdf.setDrawColor(200);
           pdf.rect(x, y, cellW, cellH);
-          pdf.setFontSize(7);
+          pdf.setFontSize(9); // Aumentado para melhor leitura
           pdf.setFont("helvetica", "bold");
           pdf.setTextColor(0);
           pdf.text(`Poste ${post.idPoste}`, x + cellW / 2, y + 5, { align: "center" });

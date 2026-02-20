@@ -11,7 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { toast } from "sonner";
 import jsPDF from "jspdf";
 
-const BASE_URL = "https://palmital.sp.gov.br/postes";
+const BASE_URL = "https://ilumina.palmital.sp.gov.br/poste";
 
 export default function PostesManagement() {
   const [posts, setPosts] = useState<RealPost[]>([]);
@@ -93,7 +93,7 @@ export default function PostesManagement() {
         pdf.text("Zeladoria Urbana", pageWidth / 2, margin + 8, { align: "center" });
 
         // Post info
-        pdf.setFontSize(20);
+        pdf.setFontSize(26); // Aumentado para maior clareza visual
         pdf.setFont("helvetica", "bold");
         pdf.text(`POSTE ${post.idPoste}`, pageWidth / 2, margin + 30, { align: "center" });
 
