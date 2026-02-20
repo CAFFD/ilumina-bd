@@ -11,7 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { toast } from "sonner";
 import jsPDF from "jspdf";
 
-const BASE_URL = "https://ilumina.palmital.sp.gov.br/poste";
+const BASE_URL = "http://ilumina.tipalmital.sp.gov.br/poste";
 
 export default function PostesManagement() {
   const [posts, setPosts] = useState<RealPost[]>([]);

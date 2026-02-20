@@ -24,7 +24,7 @@ import { QRCodeCanvas, QRCodeSVG } from "qrcode.react";
 import { toast } from "sonner";
 import jsPDF from "jspdf";
 
-const BASE_URL = "https://ilumina.palmital.sp.gov.br/poste";
+const BASE_URL = "http://ilumina.tipalmital.sp.gov.br/poste";
 
 const STAT_CARDS = [
   { label: "Pendentes", value: MOCK_OCCURRENCES.filter((o) => o.status === "PENDENTE_APROVACAO").length, icon: Clock, color: "text-warning" },

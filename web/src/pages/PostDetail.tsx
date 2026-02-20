@@ -10,7 +10,7 @@ import { StatusBadge } from "@/components/StatusBadge";
 import { QRCodeSVG } from "qrcode.react";
 import { MapPin, Download, AlertTriangle, Loader2 } from "lucide-react";
 
-const BASE_URL = "https://ilumina.palmital.sp.gov.br/poste";
+const BASE_URL = "http://ilumina.tipalmital.sp.gov.br/poste";
 
 export default function PostDetail() {
   const { codigoPublico } = useParams<{ codigoPublico: string }>();
