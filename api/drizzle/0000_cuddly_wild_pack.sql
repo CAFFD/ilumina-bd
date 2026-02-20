@@ -111,7 +111,7 @@ CREATE TABLE IF NOT EXISTS "poles" (
 	"longitude" double precision NOT NULL,
 	"lamp_type" text,
 	"power_w" numeric DEFAULT '0',
-	"ips" text[] DEFAULT ,
+	"ips" text[] DEFAULT '{}',
 	"address_id" uuid,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
