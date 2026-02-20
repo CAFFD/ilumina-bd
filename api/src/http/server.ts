@@ -8,7 +8,9 @@ import { authRoutes } from './routes/auth.js'
 import { polesRoutes } from './routes/poles.js'
 import { occurrencesRoutes } from './routes/occurrences.js'
 
-const app = fastify()
+const app = fastify({
+  logger: true
+})
 
 // --- Plugins ---
 
