@@ -24,7 +24,7 @@ import { QRCodeCanvas, QRCodeSVG } from "qrcode.react";
 import { toast } from "sonner";
 import jsPDF from "jspdf";
 
-const BASE_URL = "http://ilumina.tipalmital.sp.gov.br/poste";
+const BASE_URL = "http://ilumina.tipalmital.sp.gov.br";
 
 const STAT_CARDS = [
   { label: "Pendentes", value: MOCK_OCCURRENCES.filter((o) => o.status === "PENDENTE_APROVACAO").length, icon: Clock, color: "text-warning" },
@@ -151,7 +151,7 @@ export default function Dashboard() {
           const row = Math.floor(i / cols);
           const x = margin + col * cellW;
           const y = 15 + row * cellH;
-          const qrUrl = `${BASE_URL}/${post.idPoste}`;
+          const qrUrl = `${BASE_URL}/?poste=${post.idPoste}`;
 
           pdf.setDrawColor(200);
           pdf.rect(x, y, cellW, cellH);

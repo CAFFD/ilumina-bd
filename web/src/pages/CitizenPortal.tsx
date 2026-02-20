@@ -1,4 +1,5 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
+import { useLocation } from "react-router-dom";
 import { PublicHeader } from "@/components/PublicHeader";
 import { MapView } from "@/components/MapView";
 import { Button } from "@/components/ui/button";
@@ -30,10 +31,27 @@ export default function CitizenPortal() {
   const [posts, setPosts] = useState<RealPost[]>([]);
   const [showAllPosts, setShowAllPosts] = useState(false);
   const [activeRadius, setActiveRadius] = useState(NEARBY_RADIUS_M);
+  const location = useLocation();
+
+  const queryParams = useMemo(() => new URLSearchParams(location.search), [location.search]);
+  const qrCodePostId = queryParams.get("poste");
 
   useEffect(() => {
-    loadPostsFromAPI().then(setPosts);
-  }, []);
+    loadPostsFromAPI().then((loadedPosts) => {
+      setPosts(loadedPosts);
+      // Auto-seleção via QR Code
+      if (qrCodePostId) {
+        const targetPost = loadedPosts.find((p) => p.idPoste === qrCodePostId);
+        if (targetPost) {
+          setSelectedPost(targetPost);
+          setStep("confirm"); // Pula o mapa e vai pro formulário!
+          toast.success(`Poste ${qrCodePostId} via QR Code.`);
+        } else {
+          toast.error(`Poste do QR Code (${qrCodePostId}) não encontrado.`);
+        }
+      }
+    });
+  }, [qrCodePostId]);
 
   const findNearest = useCallback((lat: number, lng: number, postList: RealPost[]): RealPost | null => {
     let nearest: RealPost | null = null;
@@ -125,10 +143,11 @@ export default function CitizenPortal() {
   }, [posts, findNearest, getNearbyPosts]);
 
   useEffect(() => {
-    if (posts.length > 0) {
+    // Só tenta pegar a geo-localização automática se NÃO viemos via QR Code (pois o QR já seta o step confirm e o post)
+    if (posts.length > 0 && !qrCodePostId) {
       getLocation();
     }
-  }, [posts.length]);
+  }, [posts.length, qrCodePostId, getLocation]);
 
   const handleManualSelect = () => {
     const post = posts.find((p) => p.idPoste === manualId.trim());
