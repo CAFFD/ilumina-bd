@@ -38,6 +38,8 @@ services:
         condition: service_healthy
     networks:
       - iluminacity_internal
+    volumes:
+      - ./web/public/data:/web/public/data
 
   # --- Web (Frontend) ---
   web:

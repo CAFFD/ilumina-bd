@@ -14,8 +14,10 @@ if (!process.env.DATABASE_URL) {
   process.exit(1);
 }
 
+// O seed roda no container da API (`/app/src/db`), mas o arquivo no host está em `web/public/data`.
+// Para o Docker, vamos mapear um volume ou simplificar: usar o caminho montado.
 const BATCH_SIZE = 100;
-const XLSX_PATH = path.resolve(process.cwd(), "public/data/BASE_INICIAL.xlsx");
+const XLSX_PATH = path.resolve(process.cwd(), "../web/public/data/BASE_INICIAL.xlsx");
 
 interface RawRow {
   ID_POSTE?: string | number;
