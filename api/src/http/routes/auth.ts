@@ -84,7 +84,7 @@ export async function authRoutes(app: FastifyInstance) {
     return reply
       .setCookie('token', token, {
         path: '/',
-        secure: true, // Always true since we use SameSite
+        secure: process.env.USE_SECURE_COOKIES === 'true', // Permitir ambientes HTTP / IPs locais quando false
         sameSite: 'strict',
         httpOnly: true,
         maxAge: 60 * 60 * 24 * 7, // 7 days

@@ -57,6 +57,15 @@ export default function CitizenPortal() {
   }, []);
 
   const getLocation = useCallback(() => {
+    // 1. Tratamento para contextos inseguros (HTTP fora de localhost)
+    if (typeof window !== 'undefined' && !window.isSecureContext && window.location.hostname !== 'localhost') {
+      toast.warning("Ambiente inseguro detectado (HTTP). Acesso ao GPS exige HTTPS.", {
+        description: "Selecione a sua localização navegando pelo mapa manualmente."
+      });
+      setUserLocation([-22.786, -50.205]);
+      return;
+    }
+
     setLocating(true);
     if (!navigator.geolocation) {
       toast.error("Geolocalização não suportada neste navegador");
@@ -89,8 +98,19 @@ export default function CitizenPortal() {
         }
         setLocating(false);
       },
-      () => {
-        toast.info("Não foi possível acessar sua localização. Selecione o poste manualmente no mapa.");
+      (err) => {
+        let errorMsg = "Não foi possível acessar sua localização.";
+        if (err.code === err.PERMISSION_DENIED) {
+           errorMsg = "Permissão de localização negada pelo usuário.";
+        } else if (err.code === err.POSITION_UNAVAILABLE) {
+           errorMsg = "Informação do GPS indisponível no momento.";
+        } else if (err.code === err.TIMEOUT) {
+           errorMsg = "Tempo de busca da localização esgotado.";
+        }
+
+        toast.info(errorMsg, { 
+          description: "Por favor, selecione o seu poste usando o mapa." 
+        });
         const fallback: [number, number] = [-22.786, -50.205];
         setUserLocation(fallback);
         if (posts.length > 0) {
@@ -234,15 +254,26 @@ export default function CitizenPortal() {
                             ? `${posts.length} postes visíveis`
                             : `${nearbyWithDist.length} postes dentro de ${activeRadius}m`}
                         </span>
-                        <Button
-                          size="sm"
-                          variant={showAllPosts ? "default" : "outline"}
-                          className="text-xs h-7 gap-1"
-                          onClick={() => setShowAllPosts(!showAllPosts)}
-                        >
-                          <MapPin className="w-3 h-3" />
-                          {showAllPosts ? "Apenas próximos" : "Mostrar todos"}
-                        </Button>
+                        <div className="flex gap-2">
+                          <Button
+                            size="sm"
+                            variant="secondary"
+                            className="bg-primary/20 text-primary hover:bg-primary/30 text-xs h-7 gap-1 font-semibold"
+                            onClick={getLocation}
+                          >
+                            <LocateFixed className="w-3 h-3" />
+                            Pedir GPS
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant={showAllPosts ? "default" : "outline"}
+                            className="text-xs h-7 gap-1"
+                            onClick={() => setShowAllPosts(!showAllPosts)}
+                          >
+                            <MapPin className="w-3 h-3" />
+                            {showAllPosts ? "Apenas próximos" : "Mostrar todos"}
+                          </Button>
+                        </div>
                       </div>
                       <MapView
                         center={userLocation || [-22.786, -50.205]}
