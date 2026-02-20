@@ -164,7 +164,7 @@ export default function PostDetail() {
 
         {/* CTA */}
         <Button asChild className="w-full" size="lg">
-          <Link to={`/cidadao?poste=${post.idPoste}`}>
+          <Link to={`/poste/${post.idPoste}`}>
             Registrar Problema neste Poste
           </Link>
         </Button>

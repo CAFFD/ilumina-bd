@@ -151,7 +151,7 @@ export default function Dashboard() {
           const row = Math.floor(i / cols);
           const x = margin + col * cellW;
           const y = 15 + row * cellH;
-          const qrUrl = `${BASE_URL}/?poste=${post.idPoste}`;
+          const qrUrl = `${BASE_URL}/poste/${post.idPoste}`;
 
           pdf.setDrawColor(200);
           pdf.rect(x, y, cellW, cellH);

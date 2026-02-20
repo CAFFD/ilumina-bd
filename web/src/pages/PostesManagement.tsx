@@ -83,7 +83,7 @@ export default function PostesManagement() {
       for (let i = 0; i < postsToExport.length; i++) {
         if (i > 0) pdf.addPage();
         const post = postsToExport[i];
-        const qrUrl = `${BASE_URL}/?poste=${post.idPoste}`;
+        const qrUrl = `${BASE_URL}/poste/${post.idPoste}`;
 
         // Title
         pdf.setFontSize(16);
@@ -267,7 +267,7 @@ export default function PostesManagement() {
               <div className="bg-white p-4 rounded-lg border">
                 <QRCodeSVG
                   id="popup-qr-svg"
-                  value={`${BASE_URL}/?poste=${selectedPost.idPoste}`}
+                  value={`${BASE_URL}/poste/${selectedPost.idPoste}`}
                   size={200}
                   level="H"
                   includeMargin
@@ -275,7 +275,7 @@ export default function PostesManagement() {
               </div>
               
               <p className="text-xs text-muted-foreground break-all">
-                {BASE_URL}/?poste={selectedPost.idPoste}
+                {BASE_URL}/poste/{selectedPost.idPoste}
               </p>
 
               <div className="flex gap-2">
