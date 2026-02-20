@@ -1,19 +1,88 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { PublicHeader } from "@/components/PublicHeader";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { StatusBadge, PriorityBadge } from "@/components/StatusBadge";
-import { MOCK_OCCURRENCES } from "@/lib/mock-data";
-import { Search, FileText } from "lucide-react";
+import { Search, FileText, Loader2 } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
+import { toast } from "sonner";
+import { type OccurrenceStatus } from "@/lib/mock-data";
+
+interface Occurrence {
+  id: string;
+  protocol: string;
+  status: OccurrenceStatus;
+  priority: 'BAIXA' | 'MEDIA' | 'ALTA' | 'URGENTE';
+  description: string;
+  categoryName: string;
+  postExternalId: string;
+  operatorName?: string;
+  createdAt: string;
+}
+
+const mapStatus = (status: string): OccurrenceStatus => {
+  const map: Record<string, OccurrenceStatus> = {
+    'open': 'PENDENTE_APROVACAO',
+    'in_progress': 'EM_EXECUCAO',
+    'resolved': 'FINALIZADA',
+    'closed': 'FINALIZADA',
+    'cancelled': 'CANCELADA',
+  };
+  return map[status] || 'PENDENTE_APROVACAO';
+};
+
+const mapPriority = (priority: string): 'BAIXA' | 'MEDIA' | 'ALTA' | 'URGENTE' => {
+  const map: Record<string, 'BAIXA' | 'MEDIA' | 'ALTA' | 'URGENTE'> = {
+    'low': 'BAIXA',
+    'medium': 'MEDIA',
+    'high': 'ALTA',
+    'critical': 'URGENTE',
+  };
+  return map[priority] || 'MEDIA';
+}
 
 export default function TrackOccurrence() {
   const [searchParams] = useSearchParams();
   const [protocol, setProtocol] = useState(searchParams.get("protocolo") || "");
-  const [searched, setSearched] = useState(!!searchParams.get("protocolo"));
+  const [searched, setSearched] = useState(false);
+  const [occurrence, setOccurrence] = useState<Occurrence | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  const occurrence = MOCK_OCCURRENCES.find((o) => o.protocol === protocol);
+  useEffect(() => {
+    const protocolFromUrl = searchParams.get("protocolo");
+    if (protocolFromUrl) {
+      handleSearch(protocolFromUrl);
+    }
+  }, [searchParams]);
+
+  const handleSearch = async (protocolToSearch: string = protocol) => {
+    if (!protocolToSearch) return;
+
+    setSearched(true);
+    setLoading(true);
+    setOccurrence(null);
+
+    try {
+      const response = await fetch(`/api/occurrences/${protocolToSearch}`);
+      if (response.ok) {
+        const data = await response.json();
+        setOccurrence({
+          ...data,
+          status: mapStatus(data.status),
+          priority: mapPriority(data.priority),
+        });
+      } else {
+        setOccurrence(null);
+      }
+    } catch (error) {
+      console.error("Error fetching occurrence:", error);
+      toast.error("Erro ao buscar ocorrência");
+      setOccurrence(null);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -33,10 +102,18 @@ export default function TrackOccurrence() {
                 value={protocol}
                 onChange={(e) => setProtocol(e.target.value)}
               />
-              <Button onClick={() => setSearched(true)}>Buscar</Button>
+              <Button onClick={() => handleSearch()} disabled={loading}>
+                {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Buscar"}
+              </Button>
             </div>
 
-            {searched && occurrence && (
+            {loading && (
+              <div className="flex justify-center py-8">
+                <Loader2 className="w-8 h-8 animate-spin text-primary" />
+              </div>
+            )}
+
+            {!loading && searched && occurrence && (
               <div className="space-y-3 animate-fade-in">
                 <div className="bg-accent rounded-lg p-4 space-y-3">
                   <div className="flex items-center justify-between">
@@ -57,7 +134,7 @@ export default function TrackOccurrence() {
               </div>
             )}
 
-            {searched && !occurrence && (
+            {!loading && searched && !occurrence && (
               <div className="text-center py-8">
                 <FileText className="w-10 h-10 text-muted-foreground/40 mx-auto mb-3" />
                 <p className="text-muted-foreground text-sm">Nenhuma ocorrência encontrada com este protocolo.</p>

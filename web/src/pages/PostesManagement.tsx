@@ -11,7 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { toast } from "sonner";
 import jsPDF from "jspdf";
 
-const BASE_URL = "https://sistema.prefeitura.com/postes";
+const BASE_URL = "https://palmital.sp.gov.br/postes";
 
 export default function PostesManagement() {
   const [posts, setPosts] = useState<RealPost[]>([]);

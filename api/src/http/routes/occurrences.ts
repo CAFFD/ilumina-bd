@@ -52,4 +52,36 @@ export async function occurrencesRoutes(app: FastifyInstance) {
         protocol: occurrence.protocol 
     })
   })
+
+  app.get('/:protocol', async (request, reply) => {
+    const getOccurrenceParams = z.object({
+      protocol: z.string(),
+    })
+
+    const { protocol } = getOccurrenceParams.parse(request.params)
+
+    const result = await db.query.occurrences.findFirst({
+        where: eq(occurrences.protocol, protocol),
+        with: {
+            category: true,
+            pole: true,
+        }
+    })
+
+    if (!result) {
+        return reply.status(404).send({ message: 'Ocorrência não encontrada' })
+    }
+
+    return reply.send({
+        id: result.id,
+        protocol: result.protocol,
+        status: result.status,
+        priority: result.priority,
+        description: result.description,
+        categoryName: result.category?.name || result.title,
+        postExternalId: result.pole?.externalId,
+        createdAt: result.createdAt,
+        updatedAt: result.updatedAt,
+    })
+  })
 }

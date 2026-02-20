@@ -10,7 +10,7 @@ import { StatusBadge } from "@/components/StatusBadge";
 import { QRCodeSVG } from "qrcode.react";
 import { MapPin, Download, AlertTriangle, Loader2 } from "lucide-react";
 
-const BASE_URL = "https://sistema.prefeitura.com/postes";
+const BASE_URL = "https://palmital.sp.gov.br/postes";
 
 export default function PostDetail() {
   const { codigoPublico } = useParams<{ codigoPublico: string }>();
