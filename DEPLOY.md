@@ -9,6 +9,8 @@ O sistema utiliza **Docker** para garantir que tudo funcione de forma isolada e 
 O servidor Linux deve ter instalado:
 1.  **Docker** e **Docker Compose**
     - [Como instalar no Ubuntu/Debian](https://docs.docker.com/engine/install/ubuntu/)
+    - não sei qual é o linux que você está usando, ent coloquei um aleatório
+    
 2.  **Git**
     - `sudo apt update && sudo apt install git`
 
